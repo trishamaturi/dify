@@ -117,6 +117,7 @@ services:
       - db
       - redis
       - weaviate
+      - singlestore
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -170,6 +171,7 @@ services:
       - db
       - redis
       - weaviate
+      - singlestore
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -206,6 +208,16 @@ services:
       - ./volumes/db/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  singlestore:
+    image: 'singlestore/cluster-in-a-box'
+    ports:
+      - 3306:3306
+      - 3307:8080
+    environment:
+      LICENSE_KEY: BGM5MjU2ODA3OWRhNTQ3MWQ4NTZhMWM0NDdiZWVjNGJkAAAAAAAAAAAAAAAAAAAAAAswNQIZALcQcPX+MA02wZeEtouSrhda10g4y6QEEAIYRKBqe0jc5bJqgF3nTMpUS+2FmeZYLGscAA==
+      START_AFTER_INIT: 'Y'
+      ROOT_PASSWORD: admin
 
   # The redis cache.
   redis:
