@@ -2,7 +2,7 @@ version: '3.1'
 services:
   # API service
   api:
-    image: langgenius/dify-api:0.3.11
+    image: langgenius/dify-api:tmaturiv1
     restart: always
     environment:
       # Startup mode, 'api' starts the API server.
@@ -35,11 +35,11 @@ services:
       MIGRATION_ENABLED: 'true'
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
-      DB_USERNAME: postgres
-      DB_PASSWORD: difyai123456
+      DB_USERNAME: root
+      DB_PASSWORD: admin
       DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: dify
+      DB_PORT: 3306
+      DB_DATABASE: test
       # The configurations of redis connection.
       # It is consistent with the configuration in the 'redis' service below.
       REDIS_HOST: redis
@@ -117,7 +117,6 @@ services:
       - db
       - redis
       - weaviate
-      - singlestore
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -125,7 +124,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: langgenius/dify-api:0.3.11
+    image: langgenius/dify-api:tmaturiv1
     restart: always
     environment:
       # Startup mode, 'worker' starts the Celery worker for processing the queue.
@@ -140,11 +139,11 @@ services:
       SECRET_KEY: sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
-      DB_USERNAME: postgres
-      DB_PASSWORD: difyai123456
+      DB_USERNAME: root
+      DB_PASSWORD: admin
       DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: dify
+      DB_PORT: 3306
+      DB_DATABASE: test
       # The configurations of redis cache connection.
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -171,7 +170,6 @@ services:
       - db
       - redis
       - weaviate
-      - singlestore
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -193,23 +191,8 @@ services:
       # The DSN for Sentry error reporting. If not set, Sentry error reporting will be disabled.
       SENTRY_DSN: ''
 
-  # The postgres database.
+  
   db:
-    image: postgres:15-alpine
-    restart: always
-    environment:
-      # The password for the default postgres user.
-      POSTGRES_PASSWORD: difyai123456
-      # The name of the default postgres database.
-      POSTGRES_DB: dify
-      # postgres data directory
-      PGDATA: /var/lib/postgresql/data/pgdata
-    volumes:
-      - ./volumes/db/data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  singlestore:
     image: 'singlestore/cluster-in-a-box'
     ports:
       - 3306:3306
